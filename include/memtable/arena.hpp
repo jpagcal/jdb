@@ -1,8 +1,6 @@
-#include "./node.hpp"
-#include "./allocator.hpp"
 #include <vector>
 
-namespace jstore {
+namespace jdb {
 /**
  * @brief A block bump allocator for memory-resident structures
  */
@@ -13,7 +11,7 @@ class Arena {
 public:
 	static const size_t kMinBlockSize;
 	static const size_t kMaxBlockSize;
-	Arena(size_t block_size);
+	explicit Arena(size_t block_size);
 
 	Arena(const Arena &) = delete;
 	Arena &operator=(const Arena &) = delete;
@@ -21,8 +19,8 @@ public:
 	/**
 	 * @brief Simply moves the block offset to the right.
 		*
-		* If the next free space is outside of the block, allocate a new block
-		* and set the offset to 0
+		* If the next free space is outside of the block,
+		* allocate a new block and set the offset to 0
 		*
 		* @param move bytes to move
 	 */
@@ -31,7 +29,8 @@ public:
 	/**
 	 * @brief Retrieves next free space in active block
 		*
-		* @returns A non-owning ptr to the next free space in the active block
+		* @returns A non-owning ptr to the next free space in
+		* the active block
 	 */
 	std::byte *data();
 private:

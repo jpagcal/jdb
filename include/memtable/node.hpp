@@ -1,5 +1,0 @@
-namespace jstore {
-struct Node {
-
-};
-}
