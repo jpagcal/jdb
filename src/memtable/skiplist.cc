@@ -1,4 +1,5 @@
 #include "../../include/memtable/skiplist.hpp"
+#include <stdexcept>
 
 namespace jdb {
 SkipListNode::SkipListNode(std::string key, std::string val, size_t level) :
@@ -9,6 +10,10 @@ SkipListNode::SkipListNode(std::string key, std::string val, size_t level) :
 
 void SkipListNode::set_link(size_t level, SkipListNode *next) {
 	links_[level] = next;
+}
+
+void SkipListNode::set_value(std::string value) {
+	val_ = value;
 }
 
 SkipListNode *SkipListNode::next(size_t level) {
@@ -51,10 +56,42 @@ std::string SkipList::search(std::string key) {
 		return cur->value();
 	} else {
 		// some failure
+		throw std::runtime_error("Failed to find " + key);
+	}
+}
+
+void SkipList::insert(std::string key, std::string value) {
+	std::vector<SkipListNode *> update{ max_level_ };
+	
+	// get ref to head
+	SkipListNode *cur{ &head_ };
+
+	// iterate to the predecessors
+	for (size_t level{ max_level_ - 1 }; level >= 0; level-- ) {
+		SkipListNode *next{ cur->next(level) };
+
+		while (next->key() < key && next != nullptr) {
+			cur = next;
+		}
+		update[level] = cur;
 	}
 
-	// if cur->key == key return cur->value
-	// return some failure condition
+	if (cur->key() == key) {
+		cur->set_value(value);
+	} else {
+		size_t level{ rand_level() };
+
+		// arena-related functionality.
+		// alignment of SkipListNode assumes that this arena is only populated by SKipListNodes or similar alignment
+		SkipListNode *new_node{ new(arena_->data()) SkipListNode(key, value, level) };
+		arena_->bump(sizeof(SkipListNode));
+
+		// from the current node's top level, set the predecessor's next node
+		for (size_t cur_level{ level - 1 }; level >= 0; level--) {
+			new_node->set_link(cur_level, update[cur_level]->next(cur_level));
+			update[cur_level]->set_link(cur_level, new_node);
+		}
+	}
 }
 
 size_t SkipList::rand_level() {

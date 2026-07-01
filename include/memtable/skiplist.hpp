@@ -10,6 +10,7 @@ public:
 	SkipListNode(std::string key, std::string val, size_t level);
 
 	void set_link(size_t level, SkipListNode *next);
+	void set_value(std::string value);
 	SkipListNode *next(size_t level);
 	std::string key() const;
 	std::string value() const;
@@ -30,6 +31,7 @@ public:
 	void insert(std::string key, std::string value);
 	void invalidate(std::string key);
 	std::string search(std::string key);
+	std::vector<SkipListNode *> predecessors(std::string key);
 private:
 	size_t const max_level_;
 	std::unique_ptr<Arena> const arena_;
