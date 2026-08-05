@@ -1,4 +1,5 @@
 #include "../../include/memtable/skiplist.hpp"
+#include <cstddef>
 #include <stdexcept>
 
 namespace jdb {
@@ -13,7 +14,12 @@ void SkipListNode::set_link(size_t level, SkipListNode *next) {
 }
 
 void SkipListNode::set_value(std::string value) {
-	val_ = value;
+	if (value == "\0") {
+		val_.reset();
+		return;
+	}
+	
+	val_.emplace(std::move(value));
 }
 
 SkipListNode *SkipListNode::next(size_t level) {
@@ -25,7 +31,13 @@ std::string SkipListNode::key() const {
 }
 
 std::string SkipListNode::value() const {
-	return val_;
+	if (!val_.has_value()) {
+		return "TOMBSTONE";
+	}
+
+	std::string node_value{ val_.value() };
+	return node_value;
+	
 }
 
 SkipList::SkipList(size_t max_level, std::unique_ptr<Arena> arena) :
@@ -60,7 +72,8 @@ std::string SkipList::search(std::string key) {
 	}
 }
 
-void SkipList::insert(std::string key, std::string value) {
+
+void SkipList::upsert(std::string key, std::string value) {
 	std::vector<SkipListNode *> update{ max_level_ };
 	
 	// get ref to head
@@ -92,6 +105,10 @@ void SkipList::insert(std::string key, std::string value) {
 			update[cur_level]->set_link(cur_level, new_node);
 		}
 	}
+}
+
+void SkipList::tombstone(std::string key) {
+	SkipList::upsert(key, "\0");
 }
 
 size_t SkipList::rand_level() {

@@ -9,8 +9,8 @@ JDB is built incrementally. The current stage of development is a **single node,
 - [ ] Concurrency support for allocation
 
 **Database internal**
-- [ ] Memtable definition
-- [ ] Memtable instruction interface
+- [x] Memtable definition
+- [ ] Memtable interface
 
 **Persistence**
 - [ ] WAL definition

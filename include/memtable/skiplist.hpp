@@ -4,6 +4,8 @@
 #include "./arena.hpp"
 
 namespace jdb {
+constexpr char tombstone{ '\0' };
+
 class SkipListNode {
 	using node_ptr = SkipListNode *;
 public:
@@ -18,7 +20,7 @@ public:
 private:
 	std::vector<node_ptr> links_;
 	std::string key_;
-	std::string val_;
+	std::optional<std::string> val_;
 };
 
 /**
@@ -28,7 +30,8 @@ class SkipList {
 public:
 	SkipList(size_t maxLevel, std::unique_ptr<Arena> arena);
 
-	void insert(std::string key, std::string value);
+	void upsert(std::string key, std::string value);
+	void tombstone(std::string key);
 	void invalidate(std::string key);
 	std::string search(std::string key);
 	std::vector<SkipListNode *> predecessors(std::string key);
