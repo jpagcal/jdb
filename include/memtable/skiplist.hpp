@@ -4,23 +4,43 @@
 #include "./arena.hpp"
 
 namespace jdb {
-constexpr char tombstone{ '\0' };
-
+/**
+ * @brief A unit within the skip list; holds links to multiple nodes
+ */
 class SkipListNode {
 	using node_ptr = SkipListNode *;
 public:
 	SkipListNode(std::string key, std::string val, size_t level);
 
+	/**
+	 * @brief sets the ptr at a given level to a SkipListNode ptr
+	 */
 	void set_link(size_t level, SkipListNode *next);
+
+	/**
+	 * @brief sets the value the node
+	 */
 	void set_value(std::string value);
+
+	/**
+	 * @brief gets the next node at a given level
+	 */
 	SkipListNode *next(size_t level);
+
+	/**
+	 * @brief key getter
+	 */
 	std::string key() const;
+
+	/**
+	 * @brief val getter
+	 */
 	std::string value() const;
 
 private:
 	std::vector<node_ptr> links_;
 	std::string key_;
-	std::optional<std::string> val_;
+	std::string val_;
 };
 
 /**

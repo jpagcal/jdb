@@ -14,12 +14,7 @@ void SkipListNode::set_link(size_t level, SkipListNode *next) {
 }
 
 void SkipListNode::set_value(std::string value) {
-	if (value == "\0") {
-		val_.reset();
-		return;
-	}
-	
-	val_.emplace(std::move(value));
+	val_ = value;
 }
 
 SkipListNode *SkipListNode::next(size_t level) {
@@ -31,13 +26,7 @@ std::string SkipListNode::key() const {
 }
 
 std::string SkipListNode::value() const {
-	if (!val_.has_value()) {
-		return "TOMBSTONE";
-	}
-
-	std::string node_value{ val_.value() };
-	return node_value;
-	
+	return val_;
 }
 
 SkipList::SkipList(size_t max_level, std::unique_ptr<Arena> arena) :
