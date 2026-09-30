@@ -10,11 +10,11 @@ JDB is built incrementally. The current stage of development is a **single node,
 
 **Database internal**
 - [x] Memtable definition
-- [ ] Memtable interface
+- [x] Memtable interface
 
 **Persistence**
-- [ ] WAL definition
-- [ ] WAL instruction parser
+- [x] WAL definition
+- [x] WAL instruction parser
 - [ ] WAL instruction executor/replay
 
 **User-level interface**
