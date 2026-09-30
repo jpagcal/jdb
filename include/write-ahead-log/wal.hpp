@@ -13,19 +13,19 @@ enum class INST {
 using ParsedInstruction = std::pair<INST, std::pair<std::string, std::string>>;
 
 namespace WriteAheadLogParser {
-	void to_beginning(std::fstream &fs);
+	void to_beginning(std::istream &is);
 	INST to_instruction(const std::string &inst);
 	ParsedInstruction parse_instruction(const std::string &line);
-	std::vector<std::string> get_lines(std::fstream &fs);
+	std::vector<std::string> get_lines(std::istream &is);
 } // WriteAheadLogParser
 
 class WriteAheadLog {
 public:
-	WriteAheadLog();
+	WriteAheadLog(std::string filename);
 	~WriteAheadLog();
 
-	void append(std::string line_to_append) const;
-	std::vector<ParsedInstruction> instructions() const;
+	void append(std::string &&line_to_append);
+	std::vector<ParsedInstruction> instructions();
 	
 private:
 	std::fstream fs_;
