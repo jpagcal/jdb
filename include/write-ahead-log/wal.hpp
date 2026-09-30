@@ -3,16 +3,20 @@
 #include <vector>
 
 namespace jdb {
+const size_t kMaxBytes = INT_MAX;
+
 enum class INST {
 	ups,
 	del,
 };
 
-using ParsedInstruction = std::pair<INST, std::string>;
+using ParsedInstruction = std::pair<INST, std::pair<std::string, std::string>>;
 
 namespace WriteAheadLogParser {
-	static ParsedInstruction parse_instruction(std::string line);
-	static std::vector<std::string> get_lines(std::fstream fs);
+	void to_beginning(std::fstream &fs);
+	INST to_instruction(const std::string &inst);
+	ParsedInstruction parse_instruction(const std::string &line);
+	std::vector<std::string> get_lines(std::fstream &fs);
 } // WriteAheadLogParser
 
 class WriteAheadLog {
